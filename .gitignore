@@ -1,0 +1,5 @@
+# Build data
+/target/
+
+# macOS Finder Element
+*.DS_Store
