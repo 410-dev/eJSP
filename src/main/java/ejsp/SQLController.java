@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseController {
+public class SQLController {
 
-    public Connection connection = null;
+    private Connection connection = null;
 
     public boolean serverStarted = false;
     public boolean closeRefresherThread = false;
@@ -22,7 +22,7 @@ public class DatabaseController {
 
     private Thread queryRefresher = null;
 
-    public DatabaseController(String protocol, String address, String port, String databaseName, String username, String password, String driverName) {
+    public SQLController(String protocol, String address, String port, String databaseName, String username, String password, String driverName) {
         this.protocol = protocol;
         this.address = address;
         this.port = port;
@@ -32,7 +32,7 @@ public class DatabaseController {
         this.driverName = driverName;
     }
 
-    public DatabaseController(String databaseName, String username, String password) {
+    public SQLController(String databaseName, String username, String password) {
         this.protocol = "jdbc:mariadb";
         this.address = "localhost";
         this.port = "3306";
