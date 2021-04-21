@@ -1,4 +1,4 @@
-package ejsp;
+package ejsp.security;
 import java.util.Base64;
 
 public class CoreBase64 {
