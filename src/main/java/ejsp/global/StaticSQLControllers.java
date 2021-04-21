@@ -1,27 +1,27 @@
 package ejsp.global;
 
-import ejsp.DatabaseController;
+import ejsp.SQLController;
 import ejsp.exceptions.GlobalControlException;
 import java.util.ArrayList;
 
-public class StaticDatabaseControllers {
-    private static ArrayList<DatabaseController> globalDBList = new ArrayList<>();
+public class StaticSQLControllers {
+    private static ArrayList<SQLController> globalDBList = new ArrayList<>();
     private static ArrayList<String> globalDBListName = new ArrayList<>();
 
     private static boolean parallelArrayMatch() {
         return globalDBListName.size() == globalDBList.size();
     }
 
-    public static void addController(DatabaseController initializedDatabaseController, String controllerName) throws GlobalControlException {
+    public static void addController(SQLController initializedSQLController, String controllerName) throws GlobalControlException {
         if (globalDBListName.contains(controllerName)) {
             throw new GlobalControlException("The controller with the name of \"" + controllerName + "\" already exists.");
         }else{
-            globalDBList.add(initializedDatabaseController);
+            globalDBList.add(initializedSQLController);
             globalDBListName.add(controllerName);
         }
     }
 
-    public static ArrayList<DatabaseController> getAllControllers() throws GlobalControlException {
+    public static ArrayList<SQLController> getAllControllers() throws GlobalControlException {
         if (!parallelArrayMatch()){
             throw new GlobalControlException("The controller list and the name list is broken. (Internal Exception)");
         }else{
@@ -29,7 +29,7 @@ public class StaticDatabaseControllers {
         }
     }
 
-    public static DatabaseController getController(String controllerName) throws GlobalControlException {
+    public static SQLController getController(String controllerName) throws GlobalControlException {
         if (!globalDBListName.contains(controllerName)) {
             throw new GlobalControlException("The controller with the name of \"" + controllerName + "\" does not exist.");
         }else if (!parallelArrayMatch()){
