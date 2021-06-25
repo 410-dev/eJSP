@@ -1,4 +1,4 @@
-package ejsp;
+package ejsp.data;
 
 import ejsp.exceptions.PayloadExpiredException;
 import ejsp.exceptions.PayloadValueException;
