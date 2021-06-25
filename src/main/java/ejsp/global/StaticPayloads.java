@@ -1,6 +1,6 @@
 package ejsp.global;
 
-import ejsp.Payload;
+import ejsp.data.Payload;
 import ejsp.exceptions.GlobalControlException;
 import java.util.ArrayList;
 

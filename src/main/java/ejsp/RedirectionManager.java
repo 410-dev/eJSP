@@ -1,5 +1,6 @@
 package ejsp;
 
+import ejsp.data.Payload;
 import ejsp.exceptions.PayloadExpiredException;
 import ejsp.exceptions.PayloadValueException;
 import ejsp.exceptions.RedirectionManagerException;
