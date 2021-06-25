@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+// Similar with POST method (perhaps multiple) redirection(s), but using HttpSession
+
 public class RedirectionManager {
 
     private Payload payload = new Payload();
@@ -31,7 +33,7 @@ public class RedirectionManager {
         }
     }
 
-    public void setShouldRedirectionDestination(String url) {
+    public void setRedirectionDestination(String url) {
         if (url.endsWith("?")) {
             shouldRedirectTo = url.substring(0, url.length() - 1);
         }else{
@@ -39,6 +41,7 @@ public class RedirectionManager {
         }
     }
 
+    // IF there is a necessary multiple redirections, then this method will redirect to the page before final destination
     public void redirectBeforeProcess(String url) throws IOException, RedirectionManagerException {
         if (shouldRedirectTo == null) {
             throw new RedirectionManagerException("Redirection destination after required process completion is not defined.");
@@ -60,5 +63,12 @@ public class RedirectionManager {
         }
         session.removeAttribute("RedirectionPayload");
         response.sendRedirect(redirectionAddress);
+    }
+
+    public Payload getPayload() throws RedirectionManagerException{
+        if (session.getAttribute("RedirectionPayload") == null) {
+            throw new RedirectionManagerException("Payload is not properly generated from previous page.");
+        }
+        return (Payload) session.getAttribute("RedirectionPayload");
     }
 }
