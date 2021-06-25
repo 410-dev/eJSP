@@ -7,22 +7,16 @@ import java.sql.SQLException;
 
 public class SQLController {
 
-    private Connection connection = null;
+    private final String protocol;
+    private final String address;
+    private final String port;
+    private final String databaseName;
+    private final String username;
+    private final String password;
+    private final String driverName;
+    private final String tableName;
 
-    public boolean serverStarted = false;
-    public boolean closeRefresherThread = false;
-
-    private String protocol = null;
-    private String address = null;
-    private String port = null;
-    private String databaseName = null;
-    private String username = null;
-    private String password = null;
-    private String driverName = null;
-
-    private Thread queryRefresher = null;
-
-    public SQLController(String protocol, String address, String port, String databaseName, String username, String password, String driverName) {
+    public SQLController(String protocol, String address, String port, String databaseName, String tableName, String username, String password, String driverName) {
         this.protocol = protocol;
         this.address = address;
         this.port = port;
@@ -30,9 +24,10 @@ public class SQLController {
         this.username = username;
         this.password = password;
         this.driverName = driverName;
+        this.tableName = tableName;
     }
 
-    public SQLController(String databaseName, String username, String password) {
+    public SQLController(String databaseName, String tableName, String username, String password) {
         this.protocol = "jdbc:mariadb";
         this.address = "localhost";
         this.port = "3306";
@@ -40,62 +35,81 @@ public class SQLController {
         this.username = username;
         this.password = password;
         this.driverName = "org.mariadb.jdbc.Driver";
-    }
-
-    private void refreshQuery() {
-        if (!serverStarted) {
-            serverStarted = true;
-            closeRefresherThread = false;
-            queryRefresher = new Thread(() -> {
-                try {
-                    while (!closeRefresherThread) {
-                        if (connection != null) connection.close();
-                        connection = null;
-                        final String ADDRESS = protocol + "://" + address + ":" + port + "/" + databaseName;
-                        Class.forName(driverName);
-                        connection = DriverManager.getConnection(ADDRESS, username, password);
-                        executeQuery("");
-                        Thread.sleep(3600000);
-                    }
-                } catch (Exception e) {
-                    if (!e.toString().contains("InterruptedException")) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            queryRefresher.start();
-        }
+        this.tableName = tableName;
     }
 
     public ResultSet executeQuery(String toExecute) throws SQLException {
-        refreshQuery();
-        return connection.prepareStatement(toExecute).executeQuery();
+        ResultSet toReturn;
+        try {
+            final String ADDRESS = protocol + "://" + address + ":" + port + "/" + databaseName;
+            Class.forName(driverName);
+            Connection connection = DriverManager.getConnection(ADDRESS, username, password);
+            toReturn = connection.prepareStatement(toExecute).executeQuery();
+            connection.close();
+        }catch(ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return toReturn;
     }
 
-    public void clearControllerThread() {
-        closeRefresherThread = true;
-        queryRefresher.interrupt();
-    }
-
-    public ResultSet getAllRows(String tableName) throws SQLException {
+    public ResultSet getAllRows() throws SQLException {
         return executeQuery("select * from " + tableName + ";");
     }
 
-    public ResultSet getRow(String tableName, String columnID, String value) throws SQLException {
-        return executeQuery("select * from " + tableName + " where " + columnID + " = \"" + value + "\";");
+    public ResultSet getAllRows(int limit) throws SQLException {
+        return executeQuery("select * from " + tableName + " limit = " + limit + ";");
     }
 
-    public void insertRow(String tableName, String[] columnIDs, String[] values) throws SQLException {
+    public ResultSet getAllRows(String column, int limit) throws SQLException {
+        return executeQuery("select " + column + " from " + tableName + " limit = " + limit + ";");
+    }
+
+    public ResultSet getRow(String column, String value) throws SQLException {
+        return executeQuery("select * from " + tableName + " where " + column + " = \"" + value + "\";");
+    }
+
+    public ResultSet getColumnOfRow(String columnToGet, String searchColumn, String value) throws SQLException {
+        return executeQuery("select " + columnToGet + " from " + tableName + " where " + searchColumn + " = \"" + value + "\";");
+    }
+
+    public ResultSet getColumnOfRow(String columnToGet, String searchColumn, String value, int limit) throws SQLException {
+        return executeQuery("select " + columnToGet + " from " + tableName + " where " + searchColumn + " = \"" + value + "\" limit = " + limit + ";");
+    }
+
+    public void insertRow(String[] columnIDs, String[] values) throws SQLException {
         String valueString = "";
-        for(int i = 0; i < values.length; i++) valueString += "\"" + values[i] + "\", ";
-        executeQuery("insert into " + tableName + "(" + String.join(", ", columnIDs) + ") values(" + valueString + ");");
+        for(int i = 0; i < values.length; i++)  {
+            if (!values[i].startsWith("!INT")) {
+                valueString += "\"" + values[i] + "\", ";
+            }else{
+                valueString += values[i].replace("!INT", "") + ", ";
+            }
+        }
+        String columns = String.join(", ", columnIDs);
+        if (columns.startsWith(", ")) columns = columns.substring(1);
+        if (columns.endsWith(", ")) columns = columns.substring(0, columns.length()-2);
+
+        if (valueString.startsWith(", ")) valueString = valueString.substring(1);
+        if (valueString.endsWith(", ")) valueString = valueString.substring(0, valueString.length()-2);
+        System.out.println("insert into " + tableName + "(" + columns + ") values(" + valueString + ");");
+        executeQuery("insert into " + tableName + "(" + columns + ") values(" + valueString + ");");
     }
 
-    public void updateRow(String tableName, String targetColumnID, String targetValue, String columnID, String value) throws SQLException {
-        executeQuery("update " + tableName + " set " + columnID + "=\"" + value + "\" where " + targetColumnID + "=\"" + targetValue + "\";");
+    public void updateRow(String targetColumn, String targetValue, String column, String value) throws SQLException {
+        executeQuery("update " + tableName + " set " + column + "=\"" + value + "\" where " + targetColumn + "=\"" + targetValue + "\";");
     }
 
-    public void deleteRow(String tableName, String targetColumnID, String targetValue) throws SQLException {
-        executeQuery("delete from " + tableName + " where " + targetColumnID + " = \"" + targetValue + "\";");
+    public void updateRow(String targetColumn, String targetValue, String column, String value, int limit) throws SQLException {
+        executeQuery("update " + tableName + " set " + column + "=\"" + value + "\" where " + targetColumn + "=\"" + targetValue + "\" limit = " + limit + ";");
     }
+
+    public void deleteRow(String targetColumn, String targetValue) throws SQLException {
+        executeQuery("delete from " + tableName + " where " + targetColumn + " = \"" + targetValue + "\";");
+    }
+
+    public void deleteRow(String targetColumn, String targetValue, int limit) throws SQLException {
+        executeQuery("delete from " + tableName + " where " + targetColumn + " = \"" + targetValue + "\" limit = " + limit + ";");
+    }
+
 }
