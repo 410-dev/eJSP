@@ -21,6 +21,13 @@ public class StaticSQLControllers {
         }
     }
 
+    public static void addControllerIfNotExist(SQLController initializedSQLController, String controllerName) {
+        if (!globalDBListName.contains(controllerName)) {
+            globalDBList.add(initializedSQLController);
+            globalDBListName.add(controllerName);
+        }
+    }
+
     public static ArrayList<SQLController> getAllControllers() throws GlobalControlException {
         if (!parallelArrayMatch()){
             throw new GlobalControlException("The controller list and the name list is broken. (Internal Exception)");
