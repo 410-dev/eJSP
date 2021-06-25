@@ -6,19 +6,19 @@ import java.security.NoSuchAlgorithmException;
 
 public class CoreSHA {
     public static String hash512(String toDigest) {
-        return task(toDigest, "", "CoreSHA-512");
+        return task(toDigest, "", "sha-512");
     }
 
     public static String hash512(String toDigest, String salt) {
-        return task(toDigest, salt, "CoreSHA-512");
+        return task(toDigest, salt, "sha-512");
     }
 
     public static String hash256(String toDigest) {
-        return task(toDigest, "", "CoreSHA-256");
+        return task(toDigest, "", "sha-256");
     }
 
     public static String hash256(String toDigest, String salt) {
-        return task(toDigest, salt, "CoreSHA-256");
+        return task(toDigest, salt, "sha-256");
     }
 
     private static String task(String toDigest, String salt, String algorithm) {
