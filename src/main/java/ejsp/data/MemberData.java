@@ -5,10 +5,7 @@ public class MemberData {
     private String password = null;
     private String nickname = null;
     private String accountStatus = "normal";
-    private String recoveryToken = null;
-    private String bio = null;
     private int permission = 0;
-    private int loginAttempts = 0;
 
     public String getEmail() {
         return email;
@@ -42,22 +39,6 @@ public class MemberData {
         this.accountStatus = accountStatus;
     }
 
-    public String getRecoveryToken() {
-        return recoveryToken;
-    }
-
-    public void setRecoveryToken(String recoveryToken) {
-        this.recoveryToken = recoveryToken;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
     public int getPermission() {
         return permission;
     }
@@ -66,11 +47,4 @@ public class MemberData {
         this.permission = permission;
     }
 
-    public int getLoginAttempts() {
-        return loginAttempts;
-    }
-
-    public void setLoginAttempts(int loginAttempts) {
-        this.loginAttempts = loginAttempts;
-    }
 }

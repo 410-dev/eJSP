@@ -8,7 +8,6 @@ public class Post {
     private String title = "";
     private String content = "";
     private String author = "";
-    private String author_id = "";
 
     public String getTimestamp() {
         return timestamp;
@@ -54,11 +53,4 @@ public class Post {
         this.author = author;
     }
 
-    public String getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(String author_id) {
-        this.author_id = author_id;
-    }
 }
