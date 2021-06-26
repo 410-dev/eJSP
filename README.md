@@ -1,6 +1,6 @@
 # eJSP
 
-## Develope JSP easily, while maintaining the effeciency.
+## Develop JSP easily, while maintaining the effeciency.
 
 This library contains some codes to make the JSP development faster.
 
