@@ -58,15 +58,27 @@ public class SQLController {
     }
 
     public ResultSet getAllRows(int limit) throws SQLException {
-        return executeQuery("select * from " + tableName + " limit = " + limit + ";");
+        return executeQuery("select * from " + tableName + " limit " + limit + ";");
     }
 
     public ResultSet getAllRows(String column, int limit) throws SQLException {
-        return executeQuery("select " + column + " from " + tableName + " limit = " + limit + ";");
+        return executeQuery("select " + column + " from " + tableName + " limit " + limit + ";");
     }
 
     public ResultSet getRow(String column, String value) throws SQLException {
         return executeQuery("select * from " + tableName + " where " + column + " = \"" + value + "\";");
+    }
+
+    public ResultSet getRow(String column, String value, int limit) throws SQLException {
+        return executeQuery("select * from " + tableName + " where " + column + " = \"" + value + "\" limit " + limit + ";");
+    }
+
+    public ResultSet getSimilarRow(String column, String value) throws SQLException {
+        return executeQuery("select * from " + tableName + " where " + column + " like \"%" + value + "%\";");
+    }
+
+    public ResultSet getSimilarRow(String column, String value, int limit) throws SQLException {
+        return executeQuery("select * from " + tableName + " where " + column + " like \"%" + value + "%\" limit " + limit + ";");
     }
 
     public ResultSet getColumnOfRow(String columnToGet, String searchColumn, String value) throws SQLException {
@@ -74,7 +86,7 @@ public class SQLController {
     }
 
     public ResultSet getColumnOfRow(String columnToGet, String searchColumn, String value, int limit) throws SQLException {
-        return executeQuery("select " + columnToGet + " from " + tableName + " where " + searchColumn + " = \"" + value + "\" limit = " + limit + ";");
+        return executeQuery("select " + columnToGet + " from " + tableName + " where " + searchColumn + " = \"" + value + "\" limit " + limit + ";");
     }
 
     public void insertRow(String[] columnIDs, String[] values) throws SQLException {
@@ -92,7 +104,6 @@ public class SQLController {
 
         if (valueString.startsWith(", ")) valueString = valueString.substring(1);
         if (valueString.endsWith(", ")) valueString = valueString.substring(0, valueString.length()-2);
-        System.out.println("insert into " + tableName + "(" + columns + ") values(" + valueString + ");");
         executeQuery("insert into " + tableName + "(" + columns + ") values(" + valueString + ");");
     }
 
@@ -101,7 +112,7 @@ public class SQLController {
     }
 
     public void updateRow(String targetColumn, String targetValue, String column, String value, int limit) throws SQLException {
-        executeQuery("update " + tableName + " set " + column + "=\"" + value + "\" where " + targetColumn + "=\"" + targetValue + "\" limit = " + limit + ";");
+        executeQuery("update " + tableName + " set " + column + "=\"" + value + "\" where " + targetColumn + "=\"" + targetValue + "\" limit " + limit + ";");
     }
 
     public void deleteRow(String targetColumn, String targetValue) throws SQLException {
@@ -109,7 +120,7 @@ public class SQLController {
     }
 
     public void deleteRow(String targetColumn, String targetValue, int limit) throws SQLException {
-        executeQuery("delete from " + tableName + " where " + targetColumn + " = \"" + targetValue + "\" limit = " + limit + ";");
+        executeQuery("delete from " + tableName + " where " + targetColumn + " = \"" + targetValue + "\" limit " + limit + ";");
     }
 
 }
