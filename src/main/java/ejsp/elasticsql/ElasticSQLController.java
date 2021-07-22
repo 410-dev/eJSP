@@ -101,6 +101,10 @@ public class ElasticSQLController {
         return new ElasticSQLResultSet(controller.getSimilarRow(ElasticSQLResultSet.COLUMN_INDEX, key + ",", limit));
     }
 
+    public ElasticSQLResultSet selectByID(String Id) throws Exception {
+        return new ElasticSQLResultSet(controller.getRow(ElasticSQLResultSet.COLUMN_ID, Id));
+    }
+
     public void insert(String[] keys, String[] data) throws Exception {
         JSONObject jsonData = new JSONObject();
         String allIndex = "";
