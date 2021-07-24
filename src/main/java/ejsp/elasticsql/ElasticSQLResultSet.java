@@ -78,12 +78,12 @@ public class ElasticSQLResultSet {
     }
 
     public void first() throws ElasticSQLException {
-        if (maximumIndex < 1) throw new ElasticSQLException("Data length is 0.");
+        if (maximumIndex < 0) throw new ElasticSQLException("Data length is 0.");
         currentlySelectedIndex = 0;
     }
 
     public void last() throws ElasticSQLException {
-        if (maximumIndex < 1) throw new ElasticSQLException("Data length is 0.");
+        if (maximumIndex < 0) throw new ElasticSQLException("Data length is 0.");
         currentlySelectedIndex = maximumIndex;
     }
 
