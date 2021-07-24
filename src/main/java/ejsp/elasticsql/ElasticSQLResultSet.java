@@ -88,7 +88,7 @@ public class ElasticSQLResultSet {
     }
 
     public boolean previous() {
-        if (currentlySelectedIndex < 0) return false;
+        if (currentlySelectedIndex < 1) return false;
         currentlySelectedIndex--;
         return true;
     }
